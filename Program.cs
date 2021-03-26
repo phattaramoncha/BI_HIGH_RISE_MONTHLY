@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BI_HIGH_RISE_MONTHLY.Data.CLS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,17 +15,42 @@ namespace BI_HIGH_RISE_MONTHLY
         {
             Program pg = new Program();
 
+            DateTime dt_prev = DateTime.Now.AddMonths(-1);
+            //DateTime dt_now = DateTime.Now;
+
+            //DateTime dt = DateTime.Now.AddDays(-1);
+
+            //Set First Day of Month
+            dt_prev = new DateTime(dt_prev.Year, dt_prev.Month, 1);
+            //dt_now = new DateTime(dt_now.Year, dt_now.Month, 1);
+
             #region progress
             try
             {
-                clsProgress cls = new clsProgress();
-                cls.exc();
+                //var cls = new PROGRESS();
+                //cls.exc();
             }
             catch (Exception ex)
             {
                 string text = "excBIProgress: " + ex.Message.ToString();
                 bool flgBIProgress = pg.SendtoEmail(text);
             }
+
+
+            #endregion
+
+            #region  Assessment_Contractor_Construction ประเมินผู้รับเหมา งานก่อนสร้าง
+            try
+            {
+                var cls = new ASSESSMENT_CONTRACTOR_CONSTRUCTION();
+                cls.exc(dt_prev);
+            }
+            catch (Exception ex)
+            {
+                string text = "excBIAssessment_Contractor_Construction: " + ex.Message.ToString();
+                bool flgBIAssCon = pg.SendtoEmail(text);
+            }
+
 
 
             #endregion

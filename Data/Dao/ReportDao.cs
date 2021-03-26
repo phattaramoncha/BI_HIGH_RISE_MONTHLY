@@ -1,7 +1,6 @@
-﻿using BI_High.Data.Model;
+﻿using BI_HIGH_RISE_MONTHLY.Data.Model;
 using CJRPortal.App_Helpers;
 using Npgsql;
-using ReportCM.Data.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -29,6 +28,93 @@ namespace ReportCM.Data.Dao
                         using (var reader = cmd.ExecuteReader())
                         {
                             return SQLDataMapper.MapToCollection<Progress>(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void POST_HIGH_RISE_ASSESSMENT_CONTRACTOR_CONSTRUCTION(List<Assessment_Contractor_Construction> asscon)
+        {
+            bool flg = false;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(CRMDB_CONNECTION))
+                {
+                    using (SqlCommand cmd = new SqlCommand("POST_HIGH_RISE_ASSESSMENT_CONTRACTOR_CONSTRUCTION", conn))
+                    {
+                        conn.Open();
+
+                        foreach (var item in asscon)
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Clear();  
+                            cmd.Parameters.AddWithValue("@proj_code", ((object)item.proj_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@proj_name", ((object)item.proj_name) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@progress_month", ((object)item.progress_month) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@month", ((object)item.months) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@year", ((object)item.years) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@po_no", ((object)item.po_no) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contractor_code", ((object)item.contractor_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contractor_full_name_snap", ((object)item.contractor_full_name_snap) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@catagory_code", ((object)item.catagory_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@catagory_name", ((object)item.catagory_name) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@job_quality", ((object)item.score_idx_0) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_job_quality", ((object)item.grade_idx_0) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@man_days", ((object)item.score_idx_1) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_man_days", ((object)item.grade_idx_1) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@personnel", ((object)item.score_idx_2) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_personnel", ((object)item.grade_idx_2) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@coordination", ((object)item.score_idx_3) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_coordination", ((object)item.grade_idx_3) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@management", ((object)item.score_idx_4) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_management", ((object)item.grade_idx_4) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@service", ((object)item.score_idx_5) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_service", ((object)item.grade_idx_5) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@safety_hygiene", ((object)item.score_idx_6) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_safety_hygiene", ((object)item.grade_idx_6) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@assessment", ((object)item.score_assessment) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@g_assessment", ((object)item.grade_assessment) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@type", ((object)item.types) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@avg_proj", ((object)item.avg_proj) ?? DBNull.Value);
+
+
+                            int result = cmd.ExecuteNonQuery();
+
+                            // Check Error
+                            if (result < 0)
+                                Console.WriteLine("Error inserting data into Database!");
+                            else flg = true;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<Assessment_Contractor_Construction> GetAssConCon(DateTime dt_prev)
+        {
+            try
+            {
+                using (var conn = new NpgsqlConnection(DB_CONNECTION))
+                {
+                    conn.Open();
+                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_assessment_contractor_construction_v2", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("in_progress_month", NpgsqlTypes.NpgsqlDbType.Date, dt_prev); //XXXX,XXXX,XXXX
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            return SQLDataMapper.MapToCollection<Assessment_Contractor_Construction>(reader);
                         }
                     }
                 }
@@ -93,7 +179,6 @@ namespace ReportCM.Data.Dao
                 throw new Exception(ex.Message);
             }
         }
-
         public void InsertProgress(List<Progress> progress)
         {
             bool flg = false;
@@ -153,7 +238,6 @@ namespace ReportCM.Data.Dao
                 throw new Exception(ex.Message);
             }
         }
-
         public void TRUNCATE_PROGRESS()
         {
             bool flg = false;

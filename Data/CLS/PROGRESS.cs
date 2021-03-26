@@ -3,7 +3,7 @@ using System;
 
 namespace BI_HIGH_RISE_MONTHLY
 {
-    internal class clsProgress
+     class PROGRESS
     {
         public void exc()
         {
