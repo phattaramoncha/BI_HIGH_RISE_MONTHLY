@@ -6,7 +6,7 @@ using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
 
-namespace ReportCM.Data.Dao
+namespace BI_HIGH_RISE_MONTHLY.Data.Dao
 {
 
     public class BaseDao

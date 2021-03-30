@@ -1,4 +1,5 @@
-﻿using BI_HIGH_RISE_MONTHLY.Data.Model;
+﻿using BI_HIGH_RISE_MONTHLY.Data.CLS;
+using BI_HIGH_RISE_MONTHLY.Data.Model;
 using CJRPortal.App_Helpers;
 using Npgsql;
 using System;
@@ -8,11 +9,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace ReportCM.Data.Dao
+namespace BI_HIGH_RISE_MONTHLY.Data.Dao
 {
     public class ReportDao : BaseDao
     {
-
+        SEND_EMAIL mail = new SEND_EMAIL();
         public List<Progress> GetProgess()
         {
             try
@@ -34,6 +35,8 @@ namespace ReportCM.Data.Dao
             }
             catch (Exception ex)
             {
+                string text = "GetProgess => spl_get_bi_high_rise_progress_v11: " + ex.Message.ToString();
+                mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
         }
@@ -52,7 +55,7 @@ namespace ReportCM.Data.Dao
                         foreach (var item in asscon)
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.Clear();  
+                            cmd.Parameters.Clear();
                             cmd.Parameters.AddWithValue("@proj_code", ((object)item.proj_code) ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@proj_name", ((object)item.proj_name) ?? DBNull.Value);
                             cmd.Parameters.AddWithValue("@progress_month", ((object)item.progress_month) ?? DBNull.Value);
@@ -96,6 +99,8 @@ namespace ReportCM.Data.Dao
             }
             catch (Exception ex)
             {
+                string text = "Stored P. => POST_HIGH_RISE_ASSESSMENT_CONTRACTOR_CONSTRUCTION: " + ex.Message.ToString();
+                mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
         }
@@ -121,6 +126,8 @@ namespace ReportCM.Data.Dao
             }
             catch (Exception ex)
             {
+                string text = "GetAssConCon => spl_get_bi_high_rise_assessment_contractor_construction_v2: " + ex.Message.ToString();
+                mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
         }
@@ -176,6 +183,8 @@ namespace ReportCM.Data.Dao
             }
             catch (Exception ex)
             {
+                string text = "Stored P. => POST_HIGH_RISE_PROGRESS: " + ex.Message.ToString();
+                mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
         }
