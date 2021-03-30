@@ -13,8 +13,6 @@ namespace BI_HIGH_RISE_MONTHLY
     {
         static void Main(string[] args)
         {
-            Program pg = new Program();
-
             DateTime dt_prev = DateTime.Now.AddMonths(-1);
             //DateTime dt_now = DateTime.Now;
 
