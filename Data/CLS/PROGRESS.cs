@@ -1,22 +1,26 @@
 ﻿using BI_HIGH_RISE_MONTHLY.Data.Dao;
-using System;
 
 namespace BI_HIGH_RISE_MONTHLY
 {
-     class PROGRESS
+    class PROGRESS
     {
-        public void exc()
+        public void exc_progress()
         {
             ReportDao rptDao = new ReportDao();
-            var result = rptDao.GetProgess();
 
-            int ii = result.Count;
-            if (ii > 0)
+            var proj_id = rptDao.GetProjHighRise();
+            foreach (var id_ in proj_id)
             {
-                //rptDao.TRUNCATE_PROGRESS();
-                //rptDao.InsertProgress(result);
-                rptDao.POST_HIGH_RISE_PROGRESS(result);
+                var result = rptDao.GetProgess(id_.proj_id);
+                if (result.Count >0)
+                {
+                    rptDao.POST_HIGH_RISE_PROGRESS(result);
+                }
+
             }
+
+
         }
+
     }
 }
