@@ -40,29 +40,33 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
             }
         }
 
-        public List<Progress> GetProgess(Guid in_projid)
+        #region ASSESSMENT_CONTRACTOR_CONSTRUCTION
+
+        public List<Assessment_Contractor_Construction> GetAssConCon(DateTime dt_prev)
         {
             try
             {
                 using (var conn = new NpgsqlConnection(DB_CONNECTION))
                 {
                     conn.Open();
-                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_progress_devv", conn))
+                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_assessment_contractor_construction_v2",
+                               conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("in_projid", NpgsqlTypes.NpgsqlDbType.Uuid,
-                            in_projid); //XXXX,XXXX,XXXX
+                        cmd.Parameters.AddWithValue("in_progress_month", NpgsqlTypes.NpgsqlDbType.Date,
+                            dt_prev); //XXXX,XXXX,XXXX
 
                         using (var reader = cmd.ExecuteReader())
                         {
-                            return SQLDataMapper.MapToCollection<Progress>(reader);
+                            return SQLDataMapper.MapToCollection<Assessment_Contractor_Construction>(reader);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                string text = "GetProgess => spl_get_bi_high_rise_progress_zz: " + ex.Message.ToString();
+                string text = "GetAssConCon => spl_get_bi_high_rise_assessment_contractor_construction_v2: " +
+                              ex.Message.ToString();
                 mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
@@ -138,31 +142,34 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
             }
         }
 
-        public List<Assessment_Contractor_Construction> GetAssConCon(DateTime dt_prev)
+        #endregion
+
+
+        #region PROGRESS
+
+        public List<Progress> GetProgess(Guid in_projid)
         {
             try
             {
                 using (var conn = new NpgsqlConnection(DB_CONNECTION))
                 {
                     conn.Open();
-                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_assessment_contractor_construction_v2",
-                               conn))
+                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_progress_devv", conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("in_progress_month", NpgsqlTypes.NpgsqlDbType.Date,
-                            dt_prev); //XXXX,XXXX,XXXX
+                        cmd.Parameters.AddWithValue("in_projid", NpgsqlTypes.NpgsqlDbType.Uuid,
+                            in_projid); //XXXX,XXXX,XXXX
 
                         using (var reader = cmd.ExecuteReader())
                         {
-                            return SQLDataMapper.MapToCollection<Assessment_Contractor_Construction>(reader);
+                            return SQLDataMapper.MapToCollection<Progress>(reader);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                string text = "GetAssConCon => spl_get_bi_high_rise_assessment_contractor_construction_v2: " +
-                              ex.Message.ToString();
+                string text = "GetProgess => spl_get_bi_high_rise_progress_zz: " + ex.Message.ToString();
                 mail.SendtoEmail(text);
                 throw new Exception(ex.Message);
             }
@@ -218,7 +225,7 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
 
                             // Check Error
                             if (result < 0)
-                                Console.WriteLine("exec ... POST_HIGH_RISE_PROGRESS.");
+                                Console.WriteLine("exec ... POST_HIGH_RISE_PROGRESS succesed!!.");
                         }
                     }
                 }
@@ -230,6 +237,10 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
                 throw new Exception(ex.Message);
             }
         }
+
+        #endregion
+
+        #region CONTRACT_CONSTRUCTION_DATE
 
         public List<Contract_Construction_Date> GetContractConstructionDate(Guid in_projid)
         {
@@ -297,7 +308,7 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
 
                             // Check Error
                             if (result < 0)
-                                Console.WriteLine("exec ... POST_HIGH_RISE_CONTRACT_CONSTRUCTION_DATE.");
+                                Console.WriteLine("exec ... POST_HIGH_RISE_CONTRACT_CONSTRUCTION_DATE succesed!!.");
                         }
                     }
                 }
@@ -309,5 +320,96 @@ namespace BI_HIGH_RISE_MONTHLY.Data.Dao
                 throw new Exception(ex.Message);
             }
         }
+
+        #endregion
+
+        #region PO_RETENTION_WARRANTY_EXPIRED
+
+        public List<Po_Retenion_Warranty_Expired> GetPoRetenionWarrantyExpired(DateTime in_period)
+        {
+            try
+            {
+                using (var conn = new NpgsqlConnection(DB_CONNECTION))
+                {
+                    conn.Open();
+                    using (var cmd = new NpgsqlCommand("spl_get_bi_high_rise_po_retention_warranty_expired",
+                               conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("in_period", NpgsqlTypes.NpgsqlDbType.Date,
+                            in_period);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            return SQLDataMapper.MapToCollection<Po_Retenion_Warranty_Expired>(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string text = "GetPoRetenionWarrantyExpired => spl_get_bi_high_rise_po_retention_warranty_expired: " +
+                              ex.Message.ToString();
+                mail.SendtoEmail(text);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void POST_HIGH_RISE_PO_RETENTION_WARRANTY_EXPIRED(
+            List<Po_Retenion_Warranty_Expired> poRetenion)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(CRMDB_CONNECTION))
+                {
+                    using (SqlCommand cmd = new SqlCommand("POST_HIGH_RISE_PR_PO_RETENTION_WARRANTY_EXPIRED", conn))
+                    {
+                        conn.Open();
+
+                        foreach (var item in poRetenion)
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@proj_code", ((object)item.proj_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@proj_name", ((object)item.proj_name) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@cat_code", ((object)item.cat_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@sub_cat_code", ((object)item.sub_cat_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@po_type", ((object)item.po_type) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@po_status", ((object)item.po_no) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@po_no", ((object)item.po_no) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contractor_code",
+                                ((object)item.contractor_code) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contractor_name",
+                                ((object)item.contractor_name) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contract_start_date",
+                                ((object)item.contract_start_date) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contract_end_date",
+                                ((object)item.contract_end_date) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@contract_end_day_count",
+                                ((object)item.contract_end_day_count) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@amount",
+                                ((object)item.amount) ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@posting_date",
+                                ((object)item.posting_date) ?? DBNull.Value);
+
+                            int result = cmd.ExecuteNonQuery();
+
+                            // Check Error
+                            if (result < 0)
+                                Console.WriteLine(
+                                    "exec ... POST_HIGH_RISE_PR_PO_RETENTION_WARRANTY_EXPIRED succesed!!.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string text = "Stored P. => POST_HIGH_RISE_PR_PO_RETENTION_WARRANTY_EXPIRED: " + ex.Message.ToString();
+                mail.SendtoEmail(text);
+                throw new Exception(ex.Message);
+            }
+        }
+
+        #endregion
     }
 }

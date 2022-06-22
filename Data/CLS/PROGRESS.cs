@@ -6,7 +6,7 @@ namespace BI_HIGH_RISE_MONTHLY
 {
     class PROGRESS
     {
-        public void exc_progress()
+        public void exec()
         {
             ReportDao rptDao = new ReportDao();
 
@@ -26,7 +26,7 @@ namespace BI_HIGH_RISE_MONTHLY
                 #region CONTRACT_CONSTRUCTION_DATE
 
                 CONTRACT_CONSTRUCTION_DATE constructionDate = new CONTRACT_CONSTRUCTION_DATE();
-                constructionDate.EXCE_CONTRACT_CONSTRUCTION_DATE(id_.proj_id);
+                constructionDate.exec(id_.proj_id);
 
                 #endregion
             }

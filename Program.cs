@@ -7,29 +7,32 @@ namespace BI_HIGH_RISE_MONTHLY
     {
         static void Main(string[] args)
         { 
-            DateTime dt_prev = DateTime.Now.AddMonths(-1);
-            //DateTime dt_now = DateTime.Now;
-
-            //DateTime dt = DateTime.Now.AddDays(-1);
+            DateTime dt_prev = DateTime.Now.AddMonths(-1); 
 
             //Set First Day of Month
-            dt_prev = new DateTime(dt_prev.Year, dt_prev.Month, 1);
-            //dt_now = new DateTime(dt_now.Year, dt_now.Month, 1);
+            dt_prev = new DateTime(dt_prev.Year, dt_prev.Month, 1); 
 
             #region progress
 
-            var PROGRESS = new PROGRESS();
-            PROGRESS.exc_progress();
+            var progress = new PROGRESS();
+            progress.exec();
 
             #endregion
 
             #region  Assessment_Contractor_Construction ประเมินผู้รับเหมา งานก่อนสร้าง
 
-            var ASSESSMENT_CONTRACTOR_CONSTRUCTION = new ASSESSMENT_CONTRACTOR_CONSTRUCTION();
-            ASSESSMENT_CONTRACTOR_CONSTRUCTION.exc_ASSESSMENT_CONTRACTOR_CONSTRUCTION(dt_prev);
+            var assessmentContractorConstruction = new ASSESSMENT_CONTRACTOR_CONSTRUCTION();
+            assessmentContractorConstruction.exec(dt_prev);
+
+            #endregion
+
+            #region PO_RETENTION_WARRANTY_EXPIRED หมดรับประกันผลงาน
+
+            var poRetentionWarrantyExpired = new PO_RETENTION_WARRANTY_EXPIRED();
+            poRetentionWarrantyExpired.exec(dt_prev);
 
             #endregion
         }
-
+ 
     }
 }
