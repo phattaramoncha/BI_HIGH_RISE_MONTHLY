@@ -5,7 +5,7 @@ namespace BI_HIGH_RISE_MONTHLY.Data.CLS
 {
     class ASSESSMENT_CONTRACTOR_CONSTRUCTION
     {
-        public void exc_ASSESSMENT_CONTRACTOR_CONSTRUCTION(DateTime dt_prev)
+        public void exec(DateTime dt_prev)
         {
             ReportDao rptDao = new ReportDao();
             var result = rptDao.GetAssConCon(dt_prev);
